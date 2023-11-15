@@ -21,11 +21,27 @@ const filterAndGroupStudents = async (req, res) => {
     // TODO: Implement the logic to filter and group students based on specific criteria
     // 1. Define your filtering criteria for students
     //    - Example: Find students with a score greater than or equal to 80
+    const filteredCriteria = {score :{$gte:80}};
     // 2. Group the filtered students by a specific attribute
     //    - Example: Group them by 'age'
+    const groupField = 'age'
     // 3. Calculate the count or any other aggregations needed
+    const aggregation = [
+      {
+      $match: filteredCriteria,
+      },
+      {
+        $group:{
+          _id:`$${groupField}`,
+          count: {$sum:1},
+        },
+        
+      },
+    ];
     // 4. Retrieve the result and prepare it for the response
     // TODO: Execute the logic to filter and group students
+    const result = await Student.aggregate(aggregation);
+    res.json(result);
     // TODO: Respond with the grouped result
   } catch (error) {
     // Handle errors by responding with a 500 Internal Server Error
